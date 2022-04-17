@@ -5,7 +5,7 @@ import { v4 as uidV4 } from "uuid";
 import { RenderIf } from "./components/base/render-if";
 import { StorageUtility } from "./utilities/storage";
 
-const storage = new StorageUtility<TaskDto[]>("TASK_STORAGE");
+const storage = new StorageUtility<TaskDto[]>("YOUR_MIND_STORAGE");
 
 export const App: FC = () => {
 
@@ -13,14 +13,10 @@ export const App: FC = () => {
 
    const [list, setList] = useState<Array<TaskDto>>([]);
 
-   const sortList = () => {
-      const activeTasks = list.filter(t => t.status === "active");
-      const completedTasks = list.filter(t => t.status !== "active");
-      return [
-         ...activeTasks.sort((a, b) => b.time - a.time),
-         ...completedTasks.sort((a, b) => b.time - a.time)
-      ];
-   }
+   const sortedList = [
+      ...list.filter(t => t.status === "active").sort((a, b) => b.time - a.time),
+      ...list.filter(t => t.status !== "active").sort((a, b) => b.time - a.time)
+   ];
 
    const addTask = (value: string) => {
       const task: TaskDto = {
@@ -103,7 +99,7 @@ export const App: FC = () => {
             />
          </form>
          <ol className="py-2 space-y-2 _list">
-            {sortList().map((item, index) => (
+            {sortedList.map((item, index) => (
                <li key={index} className="_item flex justify-between gap-x-8">
                   <span className="text-sm leading-8 font-medium text-gray-700">{item.name}</span>
                   <div className="flex gap-x-1">
