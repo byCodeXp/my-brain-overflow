@@ -102,21 +102,18 @@ export const App: FC = () => {
                autoComplete="off"
             />
          </form>
-         <ol className="py-2 space-y-2">
+         <ol className="py-2 space-y-2 _list">
             {sortList().map((item, index) => (
-               <li key={index} className="flex justify-between gap-x-8">
+               <li key={index} className="_item flex justify-between gap-x-8">
                   <span className="text-sm leading-8 font-medium text-gray-700">{item.name}</span>
                   <div className="flex gap-x-1">
                      <RenderIf condition={item.status !== "closed"}>
                         <div
                            onClick={() => finishTask(item.id)}
-                           className={
-                              "w-8 h-8 flex rounded cursor-pointer " +
-                              (item.status === "finished" ? "bg-transparent" : "border bg-gray-50 hover:bg-gray-100")
-                           }
+                           className={`_button ${item.status === "active" && "_active"}`}
                         >
                            <CheckIcon
-                              className={"m-auto h-3 w-3 " + (item.status === "finished" ? "text-cyan-500" : "text-gray-300")}
+                              className={`_icon ${item.status === "finished" && "_finished"}`}
                               strokeWidth={4}
                            />
                         </div>
@@ -124,13 +121,10 @@ export const App: FC = () => {
                      <RenderIf condition={item.status !== "finished"}>
                         <div
                            onClick={() => closeTask(item.id)}
-                           className={
-                              "w-8 h-8 flex rounded cursor-pointer " +
-                              (item.status === "closed" ? "bg-transparent" : "border bg-gray-50 hover:bg-gray-100")
-                           }
+                           className={`_button ${item.status === "active" && "_active"}`}
                         >
                            <XIcon
-                              className={"m-auto h-3 w-3 " + (item.status === "closed" ? "text-red-500" : "text-gray-300")}
+                              className={`_icon ${item.status === "closed" && "_closed"}`}
                               strokeWidth={4}
                            />
                         </div>

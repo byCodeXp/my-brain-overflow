@@ -16,3 +16,22 @@
 ::-webkit-scrollbar-thumb {
    @apply bg-gray-400 hover:bg-gray-500;
 }
+
+
+@layer base {
+   ._list ._item ._button {
+      @apply w-8 h-8 flex rounded cursor-pointer;
+   }
+   ._list ._item ._button._active {
+      @apply border bg-gray-50 hover:bg-gray-100;
+   }
+   ._list ._item ._button ._icon {
+      @apply m-auto h-3 w-3 text-gray-300;
+   }
+   ._list ._item ._button ._icon._closed {
+      @apply text-red-500;
+   }
+   ._list ._item ._button ._icon._finished {
+      @apply text-cyan-500;
+   }
+}
