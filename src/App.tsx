@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import { TaskDto } from "./data/task";
 import { v4 as uidV4 } from "uuid";
@@ -9,11 +9,13 @@ const storage = new StorageUtility<TaskDto[]>("TASK_STORAGE");
 
 export const App: FC = () => {
 
+   const inputRef = useRef<HTMLInputElement>(null);
+
    const [list, setList] = useState<Array<TaskDto>>([]);
 
    const sortList = () => {
       const activeTasks = list.filter(t => t.status === "active");
-      const completedTasks = list.filter(t => t.status !== "active"); 
+      const completedTasks = list.filter(t => t.status !== "active");
       return [
          ...activeTasks.sort((a, b) => b.time - a.time),
          ...completedTasks.sort((a, b) => b.time - a.time)
@@ -35,19 +37,18 @@ export const App: FC = () => {
       setList(prepare);
    };
 
-   const handleKeyDown = ({ code, currentTarget }: React.KeyboardEvent<HTMLInputElement>) => {
+   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 
-      const { value } = currentTarget;
+      event.preventDefault();
 
-      if (code === "Enter") {
-
-         if (!value) return;
-
-         addTask(value);
-
-         currentTarget.value = "";
+      if (!inputRef.current?.value) {
+         return;
       }
-   };
+
+      addTask(inputRef.current.value);
+
+      inputRef.current.value = "";
+   }
 
    const finishTask = (id: string) => {
       const index = list.findIndex(t => t.id === id);
@@ -91,14 +92,16 @@ export const App: FC = () => {
 
    return (
       <div className="max-w-lg mx-auto px-8">
-         <input
-            onKeyDown={handleKeyDown}
-            type="text"
-            className="w-full rounded mt-2 outline-none leading-10 border px-4 selection:bg-gray-100 font-mono placeholder:text-sm"
-            placeholder="Type here to clear your mind"
-            spellCheck={false}
-            autoComplete="off"
-         />
+         <form onSubmit={handleSubmit}>
+            <input
+               ref={inputRef}
+               type="text"
+               className="w-full rounded mt-2 outline-none leading-10 border px-4 selection:bg-gray-100 font-mono placeholder:text-sm"
+               placeholder="Type here to clear your mind"
+               spellCheck={false}
+               autoComplete="off"
+            />
+         </form>
          <ol className="py-2 space-y-2">
             {sortList().map((item, index) => (
                <li key={index} className="flex justify-between gap-x-8">
