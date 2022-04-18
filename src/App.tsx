@@ -1,9 +1,8 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { CheckIcon, XIcon } from "@heroicons/react/outline";
 import { TaskDto } from "./data/task";
 import { v4 as uidV4 } from "uuid";
-import { RenderIf } from "./components/base/render-if";
 import { StorageUtility } from "./utilities/storage";
+import { TaskList } from "./components/layout/task-list";
 
 const storage = new StorageUtility<TaskDto[]>("YOUR_MIND_STORAGE");
 
@@ -11,12 +10,7 @@ export const App: FC = () => {
 
    const inputRef = useRef<HTMLInputElement>(null);
 
-   const [list, setList] = useState<Array<TaskDto>>([]);
-
-   const sortedList = [
-      ...list.filter(t => t.status === "active").sort((a, b) => b.time - a.time),
-      ...list.filter(t => t.status !== "active").sort((a, b) => b.time - a.time)
-   ];
+   const [tasks, setTasks] = useState<Array<TaskDto>>([]);
 
    const addTask = (value: string) => {
       const task: TaskDto = {
@@ -26,11 +20,11 @@ export const App: FC = () => {
          status: "active"
       };
 
-      const prepare = [task, ...list];
+      const prepare = [task, ...tasks];
 
       storage.set(prepare);
 
-      setList(prepare);
+      setTasks(prepare);
    };
 
    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -47,42 +41,42 @@ export const App: FC = () => {
    }
 
    const finishTask = (id: string) => {
-      const index = list.findIndex(t => t.id === id);
+      const index = tasks.findIndex(t => t.id === id);
       if (index === -1) {
          return;
       }
 
-      const task = list[index];
+      const task = tasks[index];
       task.status = "finished";
 
-      const prepare = [...list.slice(0, index), task, ...list.slice(index + 1)];
+      const prepare = [...tasks.slice(0, index), task, ...tasks.slice(index + 1)];
 
       storage.set(prepare);
 
-      setList(prepare);
+      setTasks(prepare);
    }
 
    const closeTask = (id: string) => {
-      const index = list.findIndex(t => t.id === id);
+      const index = tasks.findIndex(t => t.id === id);
       if (index === -1) {
          return;
       }
 
-      const task = list[index];
+      const task = tasks[index];
 
       task.status = "closed";
 
-      const prepare = [...list.slice(0, index), task, ...list.slice(index + 1)];
+      const prepare = [...tasks.slice(0, index), task, ...tasks.slice(index + 1)];
 
       storage.set(prepare);
 
-      setList(prepare);
+      setTasks(prepare);
    }
 
    useEffect(() => {
       const tasks = storage.get();
       if (tasks) {
-         setList(tasks);
+         setTasks(tasks);
       }
    }, []);
 
@@ -98,37 +92,7 @@ export const App: FC = () => {
                autoComplete="off"
             />
          </form>
-         <ol className="py-2 space-y-2 _list">
-            {sortedList.map((item, index) => (
-               <li key={index} className="_item flex justify-between gap-x-8">
-                  <span className="text-sm leading-8 font-medium text-gray-700">{item.name}</span>
-                  <div className="flex gap-x-1">
-                     <RenderIf condition={item.status !== "closed"}>
-                        <div
-                           onClick={() => finishTask(item.id)}
-                           className={`_button ${item.status === "active" && "_active"}`}
-                        >
-                           <CheckIcon
-                              className={`_icon ${item.status === "finished" && "_finished"}`}
-                              strokeWidth={4}
-                           />
-                        </div>
-                     </RenderIf>
-                     <RenderIf condition={item.status !== "finished"}>
-                        <div
-                           onClick={() => closeTask(item.id)}
-                           className={`_button ${item.status === "active" && "_active"}`}
-                        >
-                           <XIcon
-                              className={`_icon ${item.status === "closed" && "_closed"}`}
-                              strokeWidth={4}
-                           />
-                        </div>
-                     </RenderIf>
-                  </div>
-               </li>
-            ))}
-         </ol>
+         <TaskList items={tasks} onCloseTask={closeTask} onFinishTask={finishTask} />
       </div>
    );
 };
