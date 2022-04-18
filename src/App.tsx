@@ -57,7 +57,7 @@ export const App: FC = () => {
    }, []);
 
    useEffect(() => {
-      storage.set(tasks);
+      tasks && tasks.length > 0 && storage.set(tasks);
    }, [tasks]);
 
    return (
