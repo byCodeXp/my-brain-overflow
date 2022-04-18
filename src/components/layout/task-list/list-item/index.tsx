@@ -26,4 +26,4 @@ export const ListItem: FC<Props> = memo(({ id, name, status, onClose, onFinish }
          </div>
       </li>
    );
-}, (a, b) => a.id === b.id && a.status === b.status);
+}, (prevProps, nextProps) => prevProps.id === nextProps.id && prevProps.status === nextProps.status);

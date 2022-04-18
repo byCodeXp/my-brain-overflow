@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { TaskDto } from "./data/task";
+import { TaskDto, TaskStatus } from "./data/task";
 import { v4 as uidV4 } from "uuid";
 import { StorageUtility } from "./utilities/storage";
 import { TaskList } from "./components/layout/task-list";
@@ -12,6 +12,19 @@ export const App: FC = () => {
 
    const [tasks, setTasks] = useState<Array<TaskDto>>([]);
 
+   const setTaskStatus = (taskId: string, status: TaskStatus) =>
+      setTasks((tasks) => {
+         const index = tasks.findIndex(t => t.id === taskId);
+         if (index === -1) {
+            return tasks;
+         }
+
+         const task = tasks[index];
+         task.status = status;
+
+         return [...tasks.slice(0, index), task, ...tasks.slice(index + 1)];
+      });
+
    const addTask = (value: string) => {
       const task: TaskDto = {
          id: uidV4(),
@@ -20,11 +33,7 @@ export const App: FC = () => {
          status: "active"
       };
 
-      const prepare = [task, ...tasks];
-
-      storage.set(prepare);
-
-      setTasks(prepare);
+      setTasks((prev) => [task, ...prev])
    };
 
    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -40,45 +49,16 @@ export const App: FC = () => {
       inputRef.current.value = "";
    }
 
-   const finishTask = (id: string) => {
-      const index = tasks.findIndex(t => t.id === id);
-      if (index === -1) {
-         return;
-      }
-
-      const task = tasks[index];
-      task.status = "finished";
-
-      const prepare = [...tasks.slice(0, index), task, ...tasks.slice(index + 1)];
-
-      storage.set(prepare);
-
-      setTasks(prepare);
-   }
-
-   const closeTask = (id: string) => {
-      const index = tasks.findIndex(t => t.id === id);
-      if (index === -1) {
-         return;
-      }
-
-      const task = tasks[index];
-
-      task.status = "closed";
-
-      const prepare = [...tasks.slice(0, index), task, ...tasks.slice(index + 1)];
-
-      storage.set(prepare);
-
-      setTasks(prepare);
-   }
-
    useEffect(() => {
       const tasks = storage.get();
       if (tasks) {
          setTasks(tasks);
       }
    }, []);
+
+   useEffect(() => {
+      storage.set(tasks);
+   }, [tasks]);
 
    return (
       <div className="max-w-lg mx-auto px-8">
@@ -92,7 +72,11 @@ export const App: FC = () => {
                autoComplete="off"
             />
          </form>
-         <TaskList items={tasks} onCloseTask={closeTask} onFinishTask={finishTask} />
+         <TaskList
+            items={tasks}
+            onCloseTask={(id) => setTaskStatus(id, "closed")}
+            onFinishTask={(id) => setTaskStatus(id, "finished")}
+         />
       </div>
    );
 };
