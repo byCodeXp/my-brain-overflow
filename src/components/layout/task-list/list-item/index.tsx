@@ -7,10 +7,16 @@ interface Props extends TaskDto {
    onClose: (id: string) => void;
 }
 
+const Text: FC<{ text: string }> = memo(({ text }) => {
+   return (
+      <span className="text-sm leading-8 font-medium text-gray-700">{text}</span>
+   );
+}, () => true);
+
 export const ListItem: FC<Props> = memo(({ id, name, status, onClose, onFinish }) => {
    return (
       <li key={id} className="_item flex justify-between gap-x-8">
-         <span className="text-sm leading-8 font-medium text-gray-700">{name}</span>
+         <Text text={name} />
          <div className="flex gap-x-1">
             {status !== "closed" && (
                <div onClick={() => onFinish(id)} className={`_button ${status === "active" && "_active"}`} >
