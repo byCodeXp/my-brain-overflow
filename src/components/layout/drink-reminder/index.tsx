@@ -15,24 +15,25 @@ export const DrinkReminder: FC = () => {
       setRemind(false);
    };
 
-   useEffect(() => {
+   const check = () => {
+      const now = Date.now();
+      const lastTime = storage.get();
 
-      const interval = setInterval(() => {
-
-         const now = Date.now();
-         const lastTime = storage.get();
-
-         if (lastTime) {
-            const diff = now - lastTime;
-            if (diff > ONE_HOUR) {
-               setRemind(true);
-            }
-         } else {
-            storage.set(now);
+      if (lastTime) {
+         const diff = now - lastTime;
+         if (diff > ONE_HOUR) {
+            setRemind(true);
          }
+      } else {
+         storage.set(now - ONE_HOUR);
+         setRemind(true);
+      }
+   };
 
-      }, ONE_MINUTE);
+   useEffect(() => {
+      check();
 
+      const interval = setInterval(check, ONE_MINUTE);
       return () => {
          clearInterval(interval);
       };
