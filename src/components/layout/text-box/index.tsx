@@ -1,10 +1,17 @@
-import { FC, memo, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
+import { v4 as uidV4 } from "uuid";
+import { TaskDto } from "../../../data/task";
+import { tasksActions } from "../../../reducers/tasks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { StorageUtility } from "../../../utilities/storage";
 
-interface Props {
-   onSubmit: (value: string) => void;
-}
+const storage = new StorageUtility<TaskDto[]>("YOUR_MIND_STORAGE");
 
-export const TextBox: FC<Props> = memo(({ onSubmit }) => {
+export const TextBox: FC = () => {
+
+   const dispatch = useAppDispatch();
+
+   const tasks = useAppSelector(state => state.tasksReducer.tasks);
 
    const ref = useRef<HTMLInputElement>(null);
 
@@ -16,10 +23,21 @@ export const TextBox: FC<Props> = memo(({ onSubmit }) => {
          return;
       }
 
-      onSubmit(ref.current.value);
+      const task: TaskDto = {
+         id: uidV4(),
+         name: ref.current.value,
+         time: Date.now(),
+         status: "active"
+      };
+
+      dispatch(tasksActions.addTask(task));
 
       ref.current.value = "";
    };
+
+   useEffect(() => {
+      tasks && tasks.length > 0 && storage.set(tasks);
+   }, [tasks]);
 
    return (
       <form onSubmit={handleSubmit}>
@@ -33,4 +51,4 @@ export const TextBox: FC<Props> = memo(({ onSubmit }) => {
          />
       </form>
    );
-}, () => true);
+};

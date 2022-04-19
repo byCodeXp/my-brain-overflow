@@ -3,6 +3,8 @@ import { StrictMode } from "react";
 import { App } from "./App";
 
 import "./styles.css";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 const SELECTOR = "root";
 
@@ -15,6 +17,8 @@ if (!domRoot) {
 
 createRoot(domRoot).render(
    <StrictMode>
-      <App />
+      <Provider store={store}>
+         <App />
+      </Provider>
    </StrictMode>
 );
