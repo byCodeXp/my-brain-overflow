@@ -3,6 +3,9 @@ import { StorageUtility } from "../../../utilities/storage";
 
 const storage = new StorageUtility<number>("WATER_TIME");
 
+const ONE_MINUTE = 60_000;
+const ONE_HOUR = 3_600_000;
+
 export const DrinkReminder: FC = () => {
 
    const [remind, setRemind] = useState(false);
@@ -21,14 +24,14 @@ export const DrinkReminder: FC = () => {
 
          if (lastTime) {
             const diff = now - lastTime;
-            if (diff > 10000) {
+            if (diff > ONE_HOUR) {
                setRemind(true);
             }
          } else {
             storage.set(now);
          }
 
-      }, 1000);
+      }, ONE_MINUTE);
 
       return () => {
          clearInterval(interval);
