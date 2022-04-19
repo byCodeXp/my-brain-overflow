@@ -1,14 +1,13 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { TaskDto, TaskStatus } from "./data/task";
 import { v4 as uidV4 } from "uuid";
 import { StorageUtility } from "./utilities/storage";
 import { TaskList } from "./components/layout/task-list";
+import { TextBox } from "./components/layout/text-box";
 
 const storage = new StorageUtility<TaskDto[]>("YOUR_MIND_STORAGE");
 
 export const App: FC = () => {
-
-   const inputRef = useRef<HTMLInputElement>(null);
 
    const [tasks, setTasks] = useState<Array<TaskDto>>([]);
 
@@ -36,19 +35,6 @@ export const App: FC = () => {
       setTasks((prev) => [task, ...prev])
    };
 
-   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-
-      event.preventDefault();
-
-      if (!inputRef.current?.value) {
-         return;
-      }
-
-      addTask(inputRef.current.value);
-
-      inputRef.current.value = "";
-   }
-
    useEffect(() => {
       const tasks = storage.get();
       if (tasks) {
@@ -62,16 +48,7 @@ export const App: FC = () => {
 
    return (
       <div className="max-w-lg mx-auto px-8">
-         <form onSubmit={handleSubmit}>
-            <input
-               ref={inputRef}
-               type="text"
-               className="w-full rounded mt-2 outline-none leading-10 border px-4 selection:bg-gray-100 font-mono placeholder:text-sm"
-               placeholder="Type here to clear your mind"
-               spellCheck={false}
-               autoComplete="off"
-            />
-         </form>
+         <TextBox onSubmit={addTask} />
          <TaskList
             items={tasks}
             onCloseTask={(id) => setTaskStatus(id, "closed")}
