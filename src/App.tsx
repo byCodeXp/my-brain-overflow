@@ -4,6 +4,7 @@ import { v4 as uidV4 } from "uuid";
 import { StorageUtility } from "./utilities/storage";
 import { TaskList } from "./components/layout/task-list";
 import { TextBox } from "./components/layout/text-box";
+import { DrinkReminder } from "./components/layout/drink-reminder";
 
 const storage = new StorageUtility<TaskDto[]>("YOUR_MIND_STORAGE");
 
@@ -49,6 +50,7 @@ export const App: FC = () => {
    return (
       <div className="max-w-lg mx-auto px-8">
          <TextBox onSubmit={addTask} />
+         <DrinkReminder />
          <TaskList
             items={tasks}
             onCloseTask={(id) => setTaskStatus(id, "closed")}
