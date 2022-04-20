@@ -1,5 +1,5 @@
 import { FC, lazy, Suspense, useEffect } from "react";
-import { TaskDto } from "./data/task";
+import { TaskObject } from "./data/task";
 import { StorageUtility } from "./utilities/storage";
 import { TaskList } from "./components/layout/task-list";
 import { TextBox } from "./components/layout/text-box";
@@ -7,7 +7,7 @@ import { TasksActions } from "./reducers/tasks/action-creators";
 
 const DrinkReminder = lazy(() => import("./components/layout/drink-reminder"));
 
-const storage = new StorageUtility<TaskDto[]>("YOUR_MIND_STORAGE");
+const storage = new StorageUtility<TaskObject[]>("YOUR_MIND_STORAGE");
 
 export const App: FC = () => {
 

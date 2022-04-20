@@ -1,6 +1,6 @@
 export type TaskStatus = "active" | "closed" | "finished";
 
-export interface TaskDto {
+export interface TaskObject {
    id: string;
    name: string;
    time: number;

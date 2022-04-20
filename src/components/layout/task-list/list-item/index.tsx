@@ -1,8 +1,8 @@
 import { FC, memo } from "react";
-import { TaskDto } from "../../../../data/task";
+import { TaskObject } from "../../../../data/task";
 import { CheckIcon, XIcon } from "@heroicons/react/outline";
 
-interface Props extends TaskDto {
+interface Props extends TaskObject {
    onFinish: (id: string) => void;
    onClose: (id: string) => void;
 }

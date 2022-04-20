@@ -1,6 +1,6 @@
 import { FC, useRef } from "react";
 import { v4 as uidV4 } from "uuid";
-import { TaskDto } from "../../../data/task";
+import { TaskObject } from "../../../data/task";
 import { TasksActions } from "../../../reducers/tasks/action-creators";
 
 export const TextBox: FC = () => {
@@ -15,7 +15,7 @@ export const TextBox: FC = () => {
          return;
       }
 
-      const task: TaskDto = {
+      const task: TaskObject = {
          id: uidV4(),
          name: ref.current.value,
          time: Date.now(),
