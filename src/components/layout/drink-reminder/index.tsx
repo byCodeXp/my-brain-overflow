@@ -6,7 +6,7 @@ const storage = new StorageUtility<number>("WATER_TIME");
 const ONE_MINUTE = 60_000;
 const ONE_HOUR = 3_600_000;
 
-export const DrinkReminder: FC = () => {
+const DrinkReminder: FC = () => {
 
    const [remind, setRemind] = useState(false);
 
@@ -55,3 +55,5 @@ export const DrinkReminder: FC = () => {
       </div>
    );
 };
+
+export default DrinkReminder;
