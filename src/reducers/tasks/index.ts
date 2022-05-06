@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TaskDto } from "../../data/task";
+import { TaskObject } from "../../data/task";
 
 interface State {
-   tasks: Array<TaskDto>;
+   tasks: Array<TaskObject>;
 }
 
 const initialState: State = {
@@ -13,10 +13,10 @@ const slice = createSlice({
    name: "TASKS_SLICE",
    initialState,
    reducers: {
-      setTasks(state, { payload: tasks }: PayloadAction<Array<TaskDto>>) {
+      setTasks(state, { payload: tasks }: PayloadAction<Array<TaskObject>>) {
          state.tasks = tasks;
       },
-      addTask(state, { payload: task } : PayloadAction<TaskDto>) {
+      addTask(state, { payload: task } : PayloadAction<TaskObject>) {
          state.tasks = [task, ...state.tasks];
       }
    }

@@ -1,8 +1,9 @@
 import { FC, memo } from "react";
-import { TaskDto } from "../../../../data/task";
-import { CheckIcon, XIcon } from "@heroicons/react/outline";
+import { TaskObject } from "../../../../data/task";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark, faCheck } from "@fortawesome/free-solid-svg-icons";
 
-interface Props extends TaskDto {
+interface Props extends TaskObject {
    onFinish: (id: string) => void;
    onClose: (id: string) => void;
 }
@@ -20,12 +21,12 @@ export const ListItem: FC<Props> = memo(({ id, name, status, onClose, onFinish }
          <div className="flex gap-x-1">
             {status !== "closed" && (
                <div onClick={() => onFinish(id)} className={`_button ${status === "active" && "_active"}`} >
-                  <CheckIcon className={`_icon ${status === "finished" && "_finished"}`} strokeWidth={4} />
+                  <FontAwesomeIcon className={`_icon ${status === "finished" && "_finished"}`} icon={faCheck} />
                </div>
             )}
             {status !== "finished" && (
                <div onClick={() => onClose(id)} className={`_button ${status === "active" && "_active"}`}>
-                  <XIcon className={`_icon ${status === "closed" && "_closed"}`} strokeWidth={4} />
+                  <FontAwesomeIcon className={`_icon ${status === "closed" && "_closed"}`} icon={faXmark} />
                </div>
             )}
          </div>
